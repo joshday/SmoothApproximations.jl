@@ -23,16 +23,16 @@ approx_heaviside(; from=0, to=1, at=0, k=50) = x -> (to - from) * tanh(k * (x - 
 
 
 #-----------------------------------------------------------------------------# approx_min
-_approx_min(x::Number, y::Number; k=10) = (exp(-k*x) + exp(-k*y)) / (exp(x) + exp(y))
+_approx_min(x::Number, y::Number; k=10) = (exp(-k * x) + exp(-k * y)) / (exp(x) + exp(y))
 
 """
-    approx_min(f, val; k=10)
+    majorize_min(f, val; k=10)
 
 Smooth majorization of `x -> minimum(f(x), val)`.
 """
-approx_min(f, val; k=10) = x -> _approx_min(f(x), val; k)
+majorize_min(f, val; k=10) = x -> _approx_min(f(x), val; k)
 
-
+majorize_max(f, val; k=10) = x -> val + log1p(exp(k * x)) / k
 
 #-----------------------------------------------------------------------------# utils
 
