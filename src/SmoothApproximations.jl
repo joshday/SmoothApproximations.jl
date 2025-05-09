@@ -1,6 +1,7 @@
 module SmoothApproximations
 
-abstract type SmoothTransition end
+export approx_heaviside,
+    majorize_min
 
 #-----------------------------------------------------------------------------# approx_heaviside
 """

@@ -1,3 +1,9 @@
 using Documenter, PlotlyLight, SmoothApproximations
 
-makedocs(sitename="SmoothApproximations.jl")
+PlotlyLight.preset.template.plotly_dark!()
+
+makedocs(
+    sitename = "SmoothApproximations.jl",
+
+
+)
