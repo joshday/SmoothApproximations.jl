@@ -1,7 +1,7 @@
 module SmoothApproximations
 
 export approx_heaviside,
-    majorize_min
+    majorize_min, majorize_max
 
 #-----------------------------------------------------------------------------# approx_heaviside
 """
@@ -29,11 +29,16 @@ _approx_min(x::Number, y::Number; k=10) = (exp(-k * x) + exp(-k * y)) / (exp(x) 
 """
     majorize_min(f, val; k=10)
 
-Smooth majorization of `x -> minimum(f(x), val)`.
+Smooth majorization of `x -> min(f(x), val)` where `f` is a smooth function and `val` is a constant.
 """
 majorize_min(f, val; k=10) = x -> _approx_min(f(x), val; k)
 
-majorize_max(f, val; k=10) = x -> val + log1p(exp(k * x)) / k
+"""
+    majorize_max(f, val; k=10)
+
+Smooth majorization of `x -> max(f(x), val)` where `f` is a smooth function and `val` is a constant.
+"""
+majorize_max(f, val; k=10) = x -> val + log1p(exp(k * (f(x) - val))) / k
 
 #-----------------------------------------------------------------------------# utils
 
