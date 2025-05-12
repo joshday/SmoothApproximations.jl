@@ -7,3 +7,7 @@ PlotlyLight.preset.template.plotly_dark!()
 makedocs(
     sitename = "SmoothApproximations.jl",
 )
+
+deploydocs(
+    repo = "github.com/joshday/SmoothApproximations.jl.git",
+)
