@@ -6,6 +6,7 @@ PlotlyLight.preset.template.plotly_dark!()
 
 makedocs(
     sitename = "SmoothApproximations.jl",
+    format=Documenter.HTML(size_threshold = 999999)
 )
 
 deploydocs(
