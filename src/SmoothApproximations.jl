@@ -3,7 +3,8 @@ module SmoothApproximations
 export
     approx_step, majorize_step_up, majorize_step_down,
     majorize_min, minorize_min,
-    majorize_max, minorize_max
+    majorize_max, minorize_max,
+    majorize_interval_indicator
 
 #-----------------------------------------------------------------------------# approx_step
 """
@@ -93,5 +94,15 @@ majorize_max(f, val; k=10) = x -> _majorize_max(f(x), val; k)
 Smooth minorization of `x -> max(f(x), val)` where `f` is a smooth function and `val` is a constant.
 """
 minorize_max(f, val; k=10) = x -> _minorize_max(f(x), val; k)
+
+#-----------------------------------------------------------------------------# majorize_indicator
+gaussian(x; k=10) = exp(-k * x^2)
+
+function majorize_interval_indicator(; a=0, b=1, k=10)
+    mid = (a + b) / 2
+    f = x -> gaussian(x - mid; k)
+    nudge = 1 / f(a)
+    return x -> nudge * gaussian(x - mid; k)
+end
 
 end

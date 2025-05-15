@@ -16,6 +16,13 @@ end
 
 # Examples
 
+## Majorize Indicator over Interval
+
+```@example examples
+f = x -> float(.5 < x < .75)
+example(x, "x -> (.5 < x < .75)" => f.(x), ("k=$k" => majorize_interval_indicator(; a=.5, b=.75, k).(x) for k in [1, 5, 10])...; title="x -> (.5 < x < .75) ≈ majorize_interval_indicator(; a=.5, b=.75, k)")  # hide
+```
+
 ## Approximate [Heaviside Function](https://en.wikipedia.org/wiki/Heaviside_step_function)
 
 ```@example examples
