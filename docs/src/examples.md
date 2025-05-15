@@ -20,14 +20,26 @@ end
 
 ```@example examples
 f = x -> float(x > 0)  # hide
-example(x, "x -> (x > 0)" => f.(x), ("k=$k" => approx_heaviside(; k).(x) for k in [1, 5, 10])...; title="x -> (x > 0) ≈ approx_heaviside(; k=k)")  # hide
+example(x, "x -> (x > 0)" => f.(x), ("k=$k" => approx_step(; k).(x) for k in [1, 5, 10])...; title="x -> (x > 0) ≈ approx_step(; k=k)")  # hide
 ```
 
 ## Approximate If-Else
 
 ```@example examples
 f = x -> x > 1 ? 2 : 5  # hide
-example(x, "x -> (x > 1 ? 5 : 2)" => f.(x), ("k=$k" => approx_heaviside(; k, at=1, from=5, to=2).(x) for k in [1, 5, 10])...; title="x -> (x > 1 ? 5 : 2) ≈ approx_heaviside(; k, at=1, from=5, to=2)")  # hide
+example(x, "x -> (x > 1 ? 5 : 2)" => f.(x), ("k=$k" => approx_step(; k, at=1, from=5, to=2).(x) for k in [1, 5, 10])...; title="x -> (x > 1 ? 5 : 2) ≈ approx_step(; k, at=1, from=5, to=2)")  # hide
+```
+
+## Majorize If-Else
+
+```@example examples
+f = x -> x > 0.5 ? 1 : -1  # hide
+example(x, "x -> (x > 0.5 ? 1 : -1)" => f.(x), ("k=$k" => majorize_step_up(; k, at=0.5, from=-1, to=1).(x) for k in [1, 5, 10])...; title="x -> (x > 0.5 ? 1 : -1) ≈ majorize_step_up(; k, at=0.5, from=-1, to=1)")  # hide
+```
+
+```@example examples
+f = x -> x > 0.5 ? -1 : 1  # hide
+example(x, "x -> (x > 0.5 ? -1 : 1)" => f.(x), ("k=$k" => majorize_step_down(; k, at=0.5, from=1, to=-1).(x) for k in [1, 5, 10])...; title="x -> (x > 0.5 ? -1 : 1) ≈ majorize_step_down(; k, at=0.5, from=1, to=-1)")  # hide
 ```
 
 ## Majorize Max

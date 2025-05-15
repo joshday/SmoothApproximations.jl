@@ -1,31 +1,53 @@
 module SmoothApproximations
 
-export approx_heaviside, majorize_min, minorize_min, majorize_max, minorize_max
+export
+    approx_step, majorize_step_up, majorize_step_down,
+    majorize_min, minorize_min,
+    majorize_max, minorize_max
 
-#-----------------------------------------------------------------------------# approx_heaviside
+#-----------------------------------------------------------------------------# approx_step
 """
-    approx_heaviside(; from=0, to=1, at=0, k=50)
+    approx_step(; from=0, to=1, at=0, k=10)
 
-Approximate the heaviside step function, generalized to any step size (`from` and `to`) and
-location (`at`), using a hyperbolic tangent function with steepness parameter `k`.
-
-- Heaviside:
-| x < at | x == at | x > at |
-|:-------:|:--------:|:------:|
-| ``from`` | ``(to-from) / 2`` | ``to`` |
-
-- Approximate Heaviside:
-```math
-(to - from) * tanh(k * (x - at)) / 2 + (from + to) / 2
-```
+Approximate a step function that makes the jump `from` --> `to` at point `at`.
+The approximation uses a hyperbolic tangent function with steepness parameter `k`.
 """
-approx_heaviside(; from=0, to=1, at=0, k=10) = x -> (to - from) * tanh(k * (x - at)) / 2 + (from + to) / 2
+approx_step(; from=0, to=1, at=0, k=10) = x -> (to - from) * tanh(k * (x - at)) / 2 + (from + to) / 2
 
 
-#-----------------------------------------------------------------------------# min/max utils
+"""
+    majorize_step_up(; from=0, to=1, at=0, k=10)
 
-# softplus-ish
-_majorize_max(x, y; k=10) = y + log1p(exp(k * (x - y))) / k
+Majorize a step function that makes the jump `from` --> `to` at point `at`.
+The majorization uses a hyperbolic tangent function with steepness parameter `k`.  It's equivalent to
+`approx_step` with a shifted `to` parameter to ensure majorization.
+"""
+function majorize_step_up(; from=0, to=1, at=0, k=10)
+    to′ = to + 1 / k
+    at′ = at - 1 / k
+    f = approx_step(; from, to=to′, at = at′, k)
+    ϵ = to - f(at)
+    return approx_step(; from, to = to′ + ϵ, at = at′, k)
+end
+
+"""
+    majorize_step_up(; from=0, to=1, at=0, k=10)
+
+Majorize a step function that makes the jump `from` --> `to` at point `at`.
+The majorization uses a hyperbolic tangent function with steepness parameter `k`.  It's equivalent to
+`approx_step` with a shifted `to` parameter to ensure majorization.
+"""
+function majorize_step_down(; from=0, to=1, at=0, k=10)
+    from′ = from + 1 / k
+    at′ = at + 1 / k
+    f = approx_step(; from = from′, to, at = at′, k)
+    ϵ = from - f(at)
+    return approx_step(; from = from′ + ϵ, to, at = at′, k)
+end
+
+
+#-----------------------------------------------------------------------------# utils
+_majorize_max(x, y; k=10) = y + log1p(exp(k * (x - y))) / k  # softplus-ish
 
 _minorize_min(x, y; k=10) = -_majorize_max(-x, -y; k)
 
@@ -36,6 +58,7 @@ function _majorize_min(x, y; k=10)
 end
 
 _minorize_max(x, y; k=10) = -_majorize_min(-x, -y; k)
+
 
 
 
